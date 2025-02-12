@@ -1,0 +1,32 @@
+def PlayGame(Targets, NumbersAllowed, TrainingGame, MaxTarget, MaxNumber):
+    Score = 0
+    GameOver = False
+    while not GameOver:
+        DisplayState(Targets, NumbersAllowed, Score)#Displays the 3 shi
+        UserInput = input("Enter an expression: ")
+        print()
+        if CheckIfUserInputValid(UserInput):# ^ and $ are start and end respectively. ([0-9]+[\+\-\*\/])+: Matches a sequence of "one or more digits followed by one operator". The + outside the parentheses indicates that this sequence can repeat one or more times.
+            UserInputInRPN = ConvertToRPN(UserInput)# If this function kis being called here, it only exists here, it doesnt work in the else statement.
+            if CheckNumbersUsedAreAllInNumbersAllowed(NumbersAllowed, UserInputInRPN, MaxNumber):
+                IsTarget, Score = CheckIfUserInputEvaluationIsATarget(Targets, UserInputInRPN, Score)
+                if IsTarget:
+                    NumbersAllowed = RemoveNumbersUsed(UserInput, MaxNumber, NumbersAllowed)
+                    NumbersAllowed = FillNumbers(NumbersAllowed, TrainingGame, MaxNumber)
+        Score -= 1
+        if Targets[0] != -1:
+            GameOver = True
+        else:
+            UserInputInRPN = ConvertToRPN(UserInput)
+            Targets = UpdateTargets(Targets, TrainingGame, MaxTarget)
+            UserInputEvaluation = EvaluateRPN(UserInputInRPN)
+            print(f"Ur input: {UserInputEvaluation}")
+            ar = []
+            for x in Targets:
+                ar.append(abs(UserInputEvaluation - x))
+            print(f"diff: {min(ar)}")
+            if UserInputEvaluation + min(ar) in Targets:
+                print(f"Closestnum: {UserInputEvaluation + min(ar)}")
+            else:
+                print(f"Closestnum: {UserInputEvaluation - min(ar)}")
+        print("Game over!")
+        DisplayScore(Score)
