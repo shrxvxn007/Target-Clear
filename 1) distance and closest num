@@ -1,0 +1,20 @@
+def CheckIfUserInputEvaluationIsATarget(Targets, UserInputInRPN, Score):
+    UserInputEvaluation = EvaluateRPN(UserInputInRPN)
+    print(f"Ur input: {UserInputEvaluation}")
+    ar = []
+    for x in Targets:
+        ar.append(abs(UserInputEvaluation - x))
+    print(f"diff: {min(ar)}")
+    if UserInputEvaluation + min(ar) in Targets:
+        print(f"Closestnum: {UserInputEvaluation + min(ar)}")
+    else:
+        print(f"Closestnum: {UserInputEvaluation - min(ar)}")
+    UserInputEvaluationIsATarget = False
+    if UserInputEvaluation != -1:
+        for Count in range(0, len(Targets)):
+            if Targets[Count] == UserInputEvaluation:
+                Score += 2
+                Targets[Count] = -1
+                UserInputEvaluationIsATarget = True
+    return UserInputEvaluationIsATarget, Score
+
