@@ -1,0 +1,45 @@
+def PlayGame(Targets, NumbersAllowed, TrainingGame, MaxTarget, MaxNumber):
+    Score = 0
+    GameOver = False
+    while not GameOver:
+        DisplayState(Targets, NumbersAllowed, Score)
+        UserInput = input("Enter an expression: ")
+        print()
+        if CheckIfUserInputValid(UserInput):
+            UserInputInRPN = ConvertToRPN(UserInput)
+            if CheckNumbersUsedAreAllInNumbersAllowed(NumbersAllowed, UserInputInRPN, MaxNumber):
+                IsTarget, Score = CheckIfUserInputEvaluationIsATarget(Targets, UserInputInRPN, Score,TrainingGame, MaxTarget)
+                if IsTarget:
+                    NumbersAllowed = RemoveNumbersUsed(UserInput, MaxNumber, NumbersAllowed)
+                    NumbersAllowed = FillNumbers(NumbersAllowed, TrainingGame, MaxNumber)
+                else:
+                    Targets = UpdateTargets(Targets, TrainingGame, MaxTarget)
+            else:
+                Targets = UpdateTargets(Targets, TrainingGame, MaxTarget)
+        else:
+            Targets = UpdateTargets(Targets, TrainingGame, MaxTarget)
+        Score -= 1
+        if Targets[0] != -1:
+            GameOver = True
+    print("Game over!")
+    DisplayScore(Score)
+
+
+
+def CheckIfUserInputEvaluationIsATarget(Targets, UserInputInRPN, Score, TrainingGame, MaxTarget):
+    UserInputEvaluation = EvaluateRPN(UserInputInRPN)
+    UserInputEvaluationIsATarget = False
+    if UserInputEvaluation != -1:
+        for Count in range(0, len(Targets)):
+            if Targets[Count] == UserInputEvaluation:
+                z = input("revert?")
+                if z == "y":
+                    Score += 1
+                    UserInputEvaluationIsATarget = True
+                    break
+                else:
+                    Score += 2
+                    Targets[Count] = -1
+                    UserInputEvaluationIsATarget = True
+                    Targets = UpdateTargets(Targets, TrainingGame, MaxTarget)
+    return UserInputEvaluationIsATarget, Score
