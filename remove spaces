@@ -1,0 +1,2 @@
+UserInput = UserInputlol.replace(" ","")
+##Dont use .strip asmit only removes shit from the edges
