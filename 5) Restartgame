@@ -1,0 +1,7 @@
+if GameOver:
+    lol = input("wanna play again?")
+    if lol == "y":
+        Main()
+    else:
+        print("Game over!")
+        DisplayScore(Score)
