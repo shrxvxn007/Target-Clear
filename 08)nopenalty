@@ -1,0 +1,9 @@
+#in playgame
+while not done:
+        UserInputInRPN = ConvertToRPN(UserInput)
+        if not CheckIfUserInputValid(UserInput) or not CheckNumbersUsedAreAllInNumbersAllowed(NumbersAllowed, UserInputInRPN, MaxNumber):
+            UserInput = input("Enter an expression: ")
+        else:
+            done = True
+
+and remove->score-=1
