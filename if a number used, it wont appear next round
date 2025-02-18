@@ -1,0 +1,61 @@
+def FillNumbers(NumbersAllowed, TrainingGame, MaxNumber,count):
+    if TrainingGame:
+        return [2, 3, 2, 8, 512]
+    else:
+        done = False
+        while not done:
+            while len(NumbersAllowed)<5:
+                NumbersAllowed.append(GetNumber(MaxNumber))
+            for x in NumbersAllowed:
+                if x in count:
+                    NumbersAllowed.pop(NumbersAllowed.index(x))
+            else:
+                done = True
+
+        return NumbersAllowed
+
+def PlayGame(Targets, NumbersAllowed, TrainingGame, MaxTarget, MaxNumber):
+    Score = 0
+    GameOver = False
+    while not GameOver:
+        DisplayState(Targets, NumbersAllowed, Score)#Displays the 3 shi
+        UserInput = input("Enter an expression: ")
+        print()
+        if CheckIfUserInputValid(UserInput):# ^ and $ are start and end respectively. ([0-9]+[\\+\\-\\*\\/])+: Matches a sequence of "one or more digits followed by one operator". The + outside the parentheses indicates that this sequence can repeat one or more times.
+            UserInputInRPN = ConvertToRPN(UserInput)# If this function is being called here, it only exists here, it doesnt work in the else statement.
+            if CheckNumbersUsedAreAllInNumbersAllowed(NumbersAllowed, UserInputInRPN, MaxNumber):
+                IsTarget, Score = CheckIfUserInputEvaluationIsATarget(Targets, UserInputInRPN, Score)
+                if IsTarget:
+                    NumbersAllowed,count = RemoveNumbersUsed(UserInput, MaxNumber, NumbersAllowed)
+                    NumbersAllowed = FillNumbers(NumbersAllowed, TrainingGame, MaxNumber,count)
+        Score -= 1
+        if Targets[0] != -1:
+            GameOver = True
+        else:
+            Targets = UpdateTargets(Targets, TrainingGame, MaxTarget)
+
+    print("Game over!")
+    DisplayScore(Score)
+
+def Main():
+    NumbersAllowed = []
+    Targets = []
+    count = []
+    MaxNumberOfTargets = 20
+    MaxTarget = 0
+    MaxNumber = 0
+    TrainingGame = False
+    Choice = input("Enter y to play the training game, anything else to play a random game: ").lower()
+    print()
+    if Choice == "y":
+        MaxNumber = 1000
+        MaxTarget = 1000
+        TrainingGame = True
+        Targets = [-1, -1, -1, -1, -1, 23, 9, 140, 82, 121, 34, 45, 68, 75, 34, 23, 119, 43, 23, 119]
+    else:
+        MaxNumber = 10
+        MaxTarget = 50
+        Targets = CreateTargets(MaxNumberOfTargets, MaxTarget)#Random Number Generator Ahh if a random game, predefined if training game.
+    NumbersAllowed = FillNumbers(NumbersAllowed, TrainingGame, MaxNumber,count)#Same thing as Targets
+    PlayGame(Targets, NumbersAllowed, TrainingGame, MaxTarget, MaxNumber)
+    input()
