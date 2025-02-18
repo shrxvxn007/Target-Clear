@@ -1,0 +1,61 @@
+def ConvertToRPN(UserInput):
+    Position = 0
+    Precedence = {"+": 2, "-": 2, "*": 4, "/": 4, "^": 6, "r": 6}
+    Operators = []
+    Operand, Position = GetNumberFromUserInput(UserInput, Position)#Gives only the first part of the expression which is numbers and the index of the part where the next number starts
+    UserInputInRPN = []
+    UserInputInRPN.append(str(Operand))
+    Operators.append(UserInput[Position - 1])
+    while Position < len(UserInput):#why didnt we do this shit at the start?Ans- To get the position.
+        Operand, Position = GetNumberFromUserInput(UserInput, Position)#Gets the other parts of expression which are numbers and it gonna keep doing it for the whole expression.
+        UserInputInRPN.append(str(Operand))
+        if Position < len(UserInput):
+            CurrentOperator = UserInput[Position - 1]
+            while len(Operators) > 0 and Precedence[Operators[-1]] > Precedence[CurrentOperator]:
+                UserInputInRPN.append(Operators[-1])
+                Operators.pop()
+            if len(Operators) > 0 and Precedence[Operators[-1]] == Precedence[CurrentOperator]:# ex- 2+3-4+6 it turns the first part into (2,3,+)
+                UserInputInRPN.append(Operators[-1])
+                Operators.pop()
+            Operators.append(CurrentOperator)
+        else:
+            while len(Operators) > 0:
+                UserInputInRPN.append(Operators[-1])
+                Operators.pop()
+    return UserInputInRPN
+
+def EvaluateRPN(UserInputInRPN):
+    S = []
+    while len(UserInputInRPN) > 0:
+        while UserInputInRPN[0] not in ["+", "-", "", "/", "^", "r"]:
+            S.append(UserInputInRPN[0])
+            UserInputInRPN.pop(0)
+        Num2 = float(S[-1])
+        S.pop()
+        Num1 = float(S[-1])
+        S.pop()
+        Result = 0.0
+        if UserInputInRPN[0] == "+":
+            Result = Num1 + Num2
+        elif UserInputInRPN[0] == "-":
+            Result = Num1 - Num2
+        elif UserInputInRPN[0] == "":
+            Result = Num1 * Num2
+        elif UserInputInRPN[0] == "/":
+            Result = Num1 / Num2
+        elif UserInputInRPN[0] == "^":
+            Result = Num1**Num2
+        elif UserInputInRPN[0] == "r":
+            Result = Num1(1/Num2)
+        UserInputInRPN.pop(0)
+        S.append(str(Result))
+        if float(S[0]) - math.floor(float(S[0])) == 0.0:
+            return math.floor(float(S[0]))
+        else:
+            return -1
+
+def CheckIfUserInputValid(UserInput):#Done in PLAYGAME
+    if re.search("^([0-9]+[r\+\-\*\/\^])+[0-9]+$", UserInput) is not None:#if not a built in regex function, just add them next to each other.
+        return True
+    else:
+        return False
