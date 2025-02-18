@@ -1,0 +1,18 @@
+def FillNumbers(NumbersAllowed, TrainingGame, MaxNumber):
+    if TrainingGame:
+        return [2, 3, 2, 8, 512]
+    else:
+        done = False
+        count = []
+        while len(NumbersAllowed) < 5:
+            NumbersAllowed.append(GetNumber(MaxNumber))
+        while not done:
+            for x in NumbersAllowed:
+                if NumbersAllowed.count(x) > 1:
+                    NumbersAllowed.pop(NumbersAllowed.index(x))
+                    NumbersAllowed.append(GetNumber(MaxNumber))
+            for y in NumbersAllowed:
+                count.append(NumbersAllowed.count(y))
+            if sum(count)==5:
+                done= True
+    return NumbersAllowed
