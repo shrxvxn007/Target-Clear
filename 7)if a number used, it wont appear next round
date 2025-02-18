@@ -9,6 +9,7 @@ def FillNumbers(NumbersAllowed, TrainingGame, MaxNumber,count):
             for x in NumbersAllowed:
                 if x in count:
                     NumbersAllowed.pop(NumbersAllowed.index(x))
+                    break
             else:
                 done = True
 
