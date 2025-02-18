@@ -1,0 +1,21 @@
+def CheckIfUserInputEvaluationIsATarget(Targets, UserInputInRPN, Score):
+    realUserInputinRPN = []
+    print(UserInputInRPN)
+    for z in UserInputInRPN:
+        try:
+            realUserInputinRPN.append(int(z))
+        except ValueError:
+            continue
+    ar = []
+    for y in realUserInputinRPN:
+        if 0<y<1001 :
+            ar.append(y)
+    UserInputEvaluation = EvaluateRPN(UserInputInRPN)
+    UserInputEvaluationIsATarget = False
+    if UserInputEvaluation != -1:
+        for Count in range(0, len(Targets)):
+            if Targets[Count] == UserInputEvaluation:
+                Score += (2+len(ar))
+                Targets[Count] = -1
+                UserInputEvaluationIsATarget = True
+    return UserInputEvaluationIsATarget, Score
