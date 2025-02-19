@@ -1,0 +1,4 @@
+        if Score <= -1:
+            GameOver = True
+        else:
+            Targets = UpdateTargets(Targets, TrainingGame, MaxTarget)
