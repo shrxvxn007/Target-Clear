@@ -1,0 +1,42 @@
+class UndoState:
+    def __init__(self,NumbersAllowed, Targets, Score):
+        self.NumbersAllowed = NumbersAllowed.copy()
+        self.Targets = Targets.copy()
+        self.Score = Score
+
+    def undo(self):
+      #  print(self.NumbersAllowed, self.Targets, self.Score)
+        return self.Score, self.Targets, self.NumbersAllowed
+
+def PlayGame(Targets, NumbersAllowed, TrainingGame, MaxTarget, MaxNumber):
+    Score = 0
+    GameOver = False
+    while not GameOver:
+        targetFound = None
+        undoState = UndoState(NumbersAllowed, Targets, Score)
+        DisplayState(Targets, NumbersAllowed, Score)
+        UserInput = input("Enter an expression: ")
+        print()
+        while not CheckIfUserInputValid(UserInput):
+            print("Enter valid format")
+            UserInput = input("Enter an expression: ")
+        UserInputInRPN = ConvertToRPN(UserInput)
+        if CheckNumbersUsedAreAllInNumbersAllowed(NumbersAllowed, UserInputInRPN, MaxNumber):
+            IsTarget, Score = CheckIfUserInputEvaluationIsATarget(Targets, UserInputInRPN, Score)
+            if IsTarget:
+                targetFound = True
+                NumbersAllowed = RemoveNumbersUsed(UserInput, MaxNumber, NumbersAllowed)
+                NumbersAllowed = FillNumbers(NumbersAllowed, TrainingGame, MaxNumber)
+
+        Score -= 1
+        if Targets[0] != -1:
+            GameOver = True
+        else:
+            Targets = UpdateTargets(Targets, TrainingGame, MaxTarget)
+
+        if targetFound is not None:
+            undoInput = input("Do you want to undo: ")
+            if undoInput == "y":
+                Score, Targets, NumbersAllowed = undoState.undo()
+    print("Game over!")
+    DisplayScore(Score)
