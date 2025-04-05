@@ -1,0 +1,62 @@
+def PlayGame(Targets, NumbersAllowed, TrainingGame, MaxTarget, MaxNumber):
+    Score = 0
+    GameOver = False
+    while not GameOver:
+        DisplayState(Targets, NumbersAllowed, Score)
+        UserInput = input("Enter an expression: ")
+        print()
+        l, tf = CheckIfUserInputValid(UserInput)
+        if tf:
+            UserInputInRPN = ConvertToRPN(UserInput)
+            if CheckNumbersUsedAreAllInNumbersAllowed(NumbersAllowed, UserInputInRPN, MaxNumber):
+                IsTarget, Score = CheckIfUserInputEvaluationIsATarget(Targets, UserInputInRPN, Score)
+                if IsTarget:
+                    NumbersAllowed = RemoveNumbersUsed(UserInput, MaxNumber, NumbersAllowed)
+                    NumbersAllowed = FillNumbers(NumbersAllowed, TrainingGame, MaxNumber)
+                else:
+                    print("ur expression doesnt eval to a target")
+            else:
+                print("numbers u used are not valid")
+        else:
+            if l:
+                print("no division by zeroooo")
+            else:
+                print("not of valid infix notation.")
+        Score -= 1
+        if Targets[0] != -1:
+            GameOver = True
+        else:
+            Targets = UpdateTargets(Targets, TrainingGame, MaxTarget)
+    print("Game over!")
+    DisplayScore(Score)
+
+def CheckNumbersUsedAreAllInNumbersAllowed(NumbersAllowed, UserInputInRPN, MaxNumber):
+    Temp = []
+    for Item in NumbersAllowed:
+        Temp.append(Item)
+    for Item in UserInputInRPN:
+        if CheckValidNumber(Item, MaxNumber):
+            if int(Item) in Temp:
+                Temp.remove(int(Item))
+            else:
+                return False
+        else:
+            try:
+                if isinstance(int(Item),int):
+                    return False
+            except ValueError:
+                pass
+    return True
+
+def CheckIfUserInputValid(UserInput):
+    l = False
+    if "/0" in UserInput:
+        l = True
+        return l, False
+    if re.search("^([0-9]+[/])+[0]+$", UserInput):
+        l = True
+        return l, False
+    if re.search("^([0-9]+[\\+\\-\\*\\/])+[0-9]+$", UserInput) is not None:
+        return l,True
+    else:
+        return l, False
