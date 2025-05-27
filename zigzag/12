@@ -1,0 +1,29 @@
+def CheckIfUserInputEvaluationIsATarget(Targets, UserInputInRPN, Score):
+    UserInputEvaluation = EvaluateRPN(UserInputInRPN)
+    UserInputEvaluationIsATarget = False
+    c =0
+    if UserInputEvaluation != -1:
+        for Count in range(0, len(Targets)):
+            if Targets[Count] == UserInputEvaluation:
+                Score += 2
+                Targets[Count] = -1
+                UserInputEvaluationIsATarget = True
+                c+=1
+    return UserInputEvaluationIsATarget, Score,c
+
+def CheckNumbersUsedAreAllInNumbersAllowed(NumbersAllowed, UserInputInRPN, MaxNumber):
+    Temp = []
+    for Item in NumbersAllowed:
+        Temp.append(Item)
+    arr = []
+    for x in UserInputInRPN:
+        if CheckValidNumber(x, MaxNumber):
+            if int(x) not in NumbersAllowed:
+                arr.append(x)
+    for Item in UserInputInRPN:
+        if CheckValidNumber(Item, MaxNumber):
+            if int(Item) in Temp:
+                Temp.remove(int(Item))
+            else:
+                return False, arr
+    return True,arr
