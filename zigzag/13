@@ -1,0 +1,36 @@
+def UpdateTargets(Targets, TrainingGame, MaxTarget,c,ar):
+    ans = ar[1] - ar[0]+1
+    for Count in range(ar[0], ar[1]+1):
+        Targets[Count] = Targets[Count + ans]
+        if TrainingGame:
+            Targets[Count+ans] = Targets[-1]
+        else:
+            Targets[Count+ans] = (GetTarget(MaxTarget))
+    for Count in range(0, len(Targets) - 1):
+        Targets[Count] = Targets[Count + 1]
+    Targets.pop()
+    if TrainingGame:
+        Targets.append(Targets[-1])
+    else:
+        Targets.append(GetTarget(MaxTarget))
+    return Targets
+
+def CheckIfUserInputEvaluationIsATarget(Targets, UserInputInRPN, Score):
+    UserInputEvaluation = EvaluateRPN(UserInputInRPN)
+    UserInputEvaluationIsATarget = False
+    c = 0
+    ar =[]
+    if UserInputEvaluation != -1:
+        for Count in range(0, len(Targets)):
+            if Targets[Count] == UserInputEvaluation:
+                Score += 2
+                Targets[Count] = -1
+                UserInputEvaluationIsATarget = True
+                c+=1
+                ar.append(Count)
+    if c==2:
+        for x in range(ar[0],ar[1]):
+            Score += 2
+            Targets[x] = -1
+            UserInputEvaluationIsATarget = True
+    return UserInputEvaluationIsATarget, Score,c,ar
